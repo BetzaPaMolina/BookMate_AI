@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookMate AI - Agente Recomendador</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header class="glass-header">
+            <div class="header-content">
+                <h1>🤖 BookMate AI</h1>
+                <p class="subtitle">Agente Inteligente de Recomendación de Libros</p>
+                <div class="cycle-info">
+                    <div class="cycle-step">
+                        <span class="step-number">1</span>
+                        <span>Observación</span>
+                    </div>
+                    <div class="cycle-step">
+                        <span class="step-number">2</span>
+                        <span>Razonamiento</span>
+                    </div>
+                    <div class="cycle-step">
+                        <span class="step-number">3</span>
+                        <span>Acción</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <section class="input-section glass-card">
+                <h2>📖 Cuéntame sobre ti</h2>
+                <form id="recommendation-form" class="recommendation-form">
+                    <div class="form-group">
+                        <label for="estado_animo">¿Cómo te sientes hoy?</label>
+                        <div class="mood-selector">
+                            <button type="button" class="mood-btn" data-mood="feliz">😊 Feliz</button>
+                            <button type="button" class="mood-btn" data-mood="triste">😢 Triste</button>
+                            <button type="button" class="mood-btn" data-mood="pensativo">🤔 Pensativo</button>
+                            <button type="button" class="mood-btn" data-mood="motivado">💪 Motivado</button>
+                        </div>
+                        <input type="hidden" id="estado_animo" name="estado_animo" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="genero">¿Qué género te gusta?</label>
+                        <select id="genero" name="genero" required class="modern-select">
+                            <option value="">Elige tu género preferido</option>
+                            <option value="novela">📖 Novela Literaria</option>
+                            <option value="distopia">🌆 Distopía</option>
+                            <option value="fantasia">🐉 Fantasía</option>
+                            <option value="filosofia">💭 Filosofía</option>
+                            <option value="aventura">🗺️ Aventura</option>
+                            <option value="clasica">🏛️ Clásica</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="cta-button">
+                        🎯 Obtener Recomendación
+                    </button>
+                </form>
+            </section>
+
+            <section class="process-section" id="process-section" style="display: none;">
+                <h2>🔍 Proceso del Agente</h2>
+                <div class="process-steps">
+                    <div class="process-step" id="step-observation">
+                        <div class="step-header">
+                            <span class="step-icon">👀</span>
+                            <h3>Observación</h3>
+                        </div>
+                        <div class="step-content" id="observation-content"></div>
+                    </div>
+                    
+                    <div class="process-step" id="step-reasoning">
+                        <div class="step-header">
+                            <span class="step-icon">🤔</span>
+                            <h3>Razonamiento</h3>
+                        </div>
+                        <div class="step-content" id="reasoning-content"></div>
+                    </div>
+                    
+                    <div class="process-step" id="step-action">
+                        <div class="step-header">
+                            <span class="step-icon">🎯</span>
+                            <h3>Acción</h3>
+                        </div>
+                        <div class="step-content" id="action-content"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="result-section" id="result-section" style="display: none;">
+                <h2>📚 Tu Recomendación Personalizada</h2>
+                <div class="book-card glass-card">
+                    <div class="book-cover">
+                        <div class="cover-placeholder">📖</div>
+                    </div>
+                    <div class="book-info">
+                        <h3 id="book-title"></h3>
+                        <p class="book-author" id="book-author"></p>
+                        <p class="book-description" id="book-description"></p>
+                        <div class="recommendation-reason" id="recommendation-reason"></div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="loading" id="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>El agente está procesando tu solicitud...</p>
+            </div>
+        </main>
+
+        <footer class="info-footer">
+            <div class="footer-content">
+                <h3>ℹ️ Sobre este Proyecto</h3>
+                <p><strong>BookMate AI</strong> demuestra el ciclo de inteligencia artificial:</p>
+                <ul>
+                    <li>✅ <strong>Observación:</strong> Captura información del usuario</li>
+                    <li>✅ <strong>Razonamiento:</strong> Aplica reglas lógicas para decisiones</li>
+                    <li>✅ <strong>Acción:</strong> Genera respuesta personalizada</li>
+                </ul>
+            </div>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
