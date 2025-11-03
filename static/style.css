@@ -449,6 +449,49 @@ body {
     border-top: 2px solid #E8DDD3;
 }
 
+.input-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #E8DDD3;
+    border-radius: 12px;
+    background: white;
+    font-size: 13px;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    resize: vertical;
+    min-height: 80px;
+    max-height: 150px;
+}
+
+.input-group textarea:focus {
+    outline: none;
+    border-color: var(--purple);
+}
+
+.suggestions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.suggestion-chip {
+    padding: 6px 12px;
+    background: var(--bg-card);
+    border: 1px solid #E8DDD3;
+    border-radius: 15px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-dark);
+}
+
+.suggestion-chip:hover {
+    background: var(--purple);
+    color: white;
+    border-color: var(--purple);
+    transform: translateY(-1px);
+}
+
 .mood-selector {
     display: grid;
     grid-template-columns: repeat(2, 1fr);

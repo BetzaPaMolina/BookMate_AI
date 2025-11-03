@@ -88,6 +88,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
+    // Suggestion chips click handler
+    document.querySelectorAll('.suggestion-chip').forEach(chip => {
+        chip.addEventListener('click', function() {
+            const userMessageInput = document.getElementById('user-message');
+            userMessageInput.value = this.dataset.text;
+            userMessageInput.focus();
+        });
+    });
+    
     // Load initial data
     loadLibrary();
     loadRecentBooks();
@@ -100,34 +109,25 @@ function showAllBooks() {
 // Chat functionality
 const form = document.getElementById('recommendation-form');
 const chatMessages = document.getElementById('chat-messages');
-const moodBtns = document.querySelectorAll('.mood-btn');
-const estadoAnimoInput = document.getElementById('estado_animo');
+const userMessageInput = document.getElementById('user-message');
 const sendBtn = document.getElementById('send-btn');
-
-// Mood selection
-moodBtns.forEach(btn => {
-    btn.addEventListener('click', function() {
-        moodBtns.forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-        estadoAnimoInput.value = this.dataset.mood;
-    });
-});
 
 // Form submission
 form.addEventListener('submit', async function(e) {
     e.preventDefault();
     
-    const estadoAnimo = estadoAnimoInput.value;
-    const genero = document.getElementById('genero').value;
+    const userMessage = userMessageInput.value.trim();
     
-    if (!estadoAnimo || !genero) {
-        addMessage('bot', '⚠️ Por favor selecciona tu estado de ánimo y género preferido.');
+    console.log('📝 Formulario enviado:', userMessage);  // Debug
+    
+    if (!userMessage) {
+        addMessage('bot', '⚠️ Por favor escribe algo sobre lo que buscas.');
         return;
     }
 
     // Add user message
-    const generoText = document.getElementById('genero').selectedOptions[0].text;
-    addMessage('user', `Estoy ${estadoAnimo} y me gustaría leer ${generoText}`);
+    addMessage('user', userMessage);
+    userMessageInput.value = '';
     
     // Show typing indicator
     const typingDiv = document.createElement('div');
@@ -140,18 +140,22 @@ form.addEventListener('submit', async function(e) {
     sendBtn.disabled = true;
 
     try {
+        console.log('🚀 Enviando petición...');  // Debug
+        
         const response = await fetch('/recomendar', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                estado_animo: estadoAnimo,
-                genero: genero
+                message: userMessage
             })
         });
         
+        console.log('📨 Respuesta recibida:', response.status);  // Debug
+        
         const data = await response.json();
+        console.log('📦 Datos:', data);  // Debug
         
         // Remove typing indicator
         document.getElementById('typing')?.remove();
@@ -163,9 +167,9 @@ form.addEventListener('submit', async function(e) {
         }
         
     } catch (error) {
+        console.error('❌ Error completo:', error);  // Debug
         document.getElementById('typing')?.remove();
-        addMessage('bot', '❌ Error de conexión con el servidor');
-        console.error('Error:', error);
+        addMessage('bot', '❌ Error de conexión con el servidor: ' + error.message);
     } finally {
         sendBtn.disabled = false;
     }
@@ -183,8 +187,13 @@ function addMessage(type, text) {
 }
 
 function displayRecommendation(data) {
+    console.log('🎯 Mostrando recomendación:', data);  // Debug
+    
     const messageDiv = document.createElement('div');
     messageDiv.className = 'message bot';
+    
+    const confidence = (data.confianza * 100).toFixed(0);
+    const confidenceColor = data.confianza > 0.7 ? 'var(--green)' : data.confianza > 0.5 ? 'var(--yellow)' : 'var(--coral)';
     
     messageDiv.innerHTML = `
         <div>🎯 ¡Tengo la recomendación perfecta para ti!</div>
@@ -196,11 +205,16 @@ function displayRecommendation(data) {
                 <h4>${data.libro.titulo}</h4>
                 <p style="color: var(--purple); margin-bottom: 5px;">${data.libro.autor}</p>
                 <p>${data.libro.descripcion}</p>
+                <div style="margin-top: 8px; font-size: 11px;">
+                    <span style="background: ${confidenceColor}; color: white; padding: 3px 8px; border-radius: 10px;">
+                        Confianza: ${confidence}%
+                    </span>
+                </div>
             </div>
         </div>
         <div style="margin-top: 10px; font-size: 13px; background: rgba(255,255,255,0.2); padding: 10px; border-radius: 10px;">
             <strong>💡 ¿Por qué este libro?</strong><br>
-            ${data.proceso.razonamiento.explicacion}
+            ${data.explicacion}
         </div>
         <div class="quick-actions">
             <button class="quick-btn" onclick="alert('Función en desarrollo')">📚 Más info</button>
@@ -212,15 +226,23 @@ function displayRecommendation(data) {
     chatMessages.appendChild(messageDiv);
     scrollToBottom();
     
-    // Show process info
-    setTimeout(() => {
-        addMessage('bot', `
-            📊 <strong>Proceso del Agente:</strong><br><br>
-            👀 <strong>Observación:</strong> Detecté que estás ${data.proceso.observacion.estado_animo} y buscas ${data.proceso.observacion.genero}<br><br>
-            🤔 <strong>Razonamiento:</strong> ${data.proceso.razonamiento.regla}<br><br>
-            ✅ <strong>Acción:</strong> ${data.proceso.accion}
-        `);
-    }, 500);
+    // Show AI analysis
+    if (data.analisis) {
+        setTimeout(() => {
+            const emotion_emojis = {
+                'feliz': '😊', 'triste': '😢', 'pensativo': '🤔', 
+                'motivado': '💪', 'aburrido': '😴', 'ansioso': '😰', 'curioso': '🧐'
+            };
+            
+            const emoji = emotion_emojis[data.analisis.emotion] || '🎭';
+            
+            addMessage('bot', `
+                🤖 <strong>Análisis:</strong><br><br>
+                ${emoji} <strong>Estado detectado:</strong> ${data.analisis.emotion}<br>
+                📚 <strong>Género inferido:</strong> ${data.analisis.genre}
+            `);
+        }, 500);
+    }
 }
 
 function scrollToBottom() {

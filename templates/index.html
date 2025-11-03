@@ -82,28 +82,20 @@
             <div class="chat-input-area">
                 <form id="recommendation-form">
                     <div class="input-group">
-                        <label>¿Cómo te sientes hoy?</label>
-                        <div class="mood-selector">
-                            <button type="button" class="mood-btn" data-mood="feliz">😊 Feliz</button>
-                            <button type="button" class="mood-btn" data-mood="triste">😢 Triste</button>
-                            <button type="button" class="mood-btn" data-mood="pensativo">🤔 Pensativo</button>
-                            <button type="button" class="mood-btn" data-mood="motivado">💪 Motivado</button>
-                            <button type="button" class="mood-btn" data-mood="aburrido">😴 Aburrido</button>
+                        <label>💬 Cuéntame qué buscas</label>
+                        <textarea 
+                            id="user-message" 
+                            name="message" 
+                            placeholder="Ejemplo: 'Me siento nostálgico y quiero algo que me haga reflexionar sobre la vida' o 'Busco algo ligero y divertido para desconectar'"
+                            rows="3"
+                            required
+                        ></textarea>
+                        <div class="suggestions">
+                            <span class="suggestion-chip" data-text="Me siento melancólico, necesito algo profundo">😔 Melancólico</span>
+                            <span class="suggestion-chip" data-text="Quiero aventura y emoción">🗺️ Aventura</span>
+                            <span class="suggestion-chip" data-text="Busco algo filosófico que me haga pensar">💭 Filosófico</span>
+                            <span class="suggestion-chip" data-text="Dame algo ligero y entretenido">😊 Entretenido</span>
                         </div>
-                        <input type="hidden" id="estado_animo" name="estado_animo" required>
-                    </div>
-
-                    <div class="input-group">
-                        <label>¿Qué género prefieres?</label>
-                        <select id="genero" name="genero" required>
-                            <option value="">Selecciona un género</option>
-                            <option value="filosofia">🧠 Filosofía</option>
-                            <option value="romance">💔 Romance</option>
-                            <option value="distopia">🌆 Distopía</option>
-                            <option value="aventura">🗺️ Aventura</option>
-                            <option value="clasica">🏛️ Clásica</option>
-                            <option value="cualquiera">✨ Sorpréndeme</option>
-                        </select>
                     </div>
 
                     <div class="chat-input">

@@ -4,6 +4,10 @@ from book_agent import BookAgent
 app = Flask(__name__)
 agent = BookAgent()
 
+# Comentamos la IA por ahora, usaremos el agente simple
+# from ai_engine import BookRecommendationAI
+# ai_engine = BookRecommendationAI()
+
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -12,20 +16,67 @@ def home():
 def recomendar():
     try:
         data = request.get_json()
-        estado_animo = data.get('estado_animo', '').strip()
-        genero = data.get('genero', '').strip()
+        user_message = data.get('message', '').strip()
         
-        if not estado_animo or not genero:
-            return jsonify({'error': 'Por favor completa ambos campos'}), 400
+        print(f"📨 Mensaje recibido: {user_message}")  # Debug
         
+        if not user_message:
+            return jsonify({'error': 'Por favor escribe un mensaje'}), 400
+        
+        # Análisis simple del mensaje (sin IA pesada)
+        user_message_lower = user_message.lower()
+        
+        # Detectar estado de ánimo
+        estado_animo = "feliz"  # default
+        if any(word in user_message_lower for word in ['triste', 'melancólico', 'deprimido', 'solo', 'nostálgico']):
+            estado_animo = "triste"
+        elif any(word in user_message_lower for word in ['pensativo', 'reflexivo', 'filosófico', 'pensar', 'reflexionar']):
+            estado_animo = "pensativo"
+        elif any(word in user_message_lower for word in ['motivado', 'inspirado', 'energía', 'determinado']):
+            estado_animo = "motivado"
+        elif any(word in user_message_lower for word in ['aburrido', 'cansado', 'hastiado', 'monótono']):
+            estado_animo = "aburrido"
+        elif any(word in user_message_lower for word in ['feliz', 'alegre', 'contento', 'emocionado']):
+            estado_animo = "feliz"
+        
+        # Detectar género
+        genero = "cualquiera"  # default
+        if any(word in user_message_lower for word in ['filosofía', 'filosófico', 'existencial', 'reflexivo']):
+            genero = "filosofia"
+        elif any(word in user_message_lower for word in ['romance', 'amor', 'romántico', 'sentimental']):
+            genero = "romance"
+        elif any(word in user_message_lower for word in ['distopía', 'distópico', 'futuro', 'oscuro']):
+            genero = "distopia"
+        elif any(word in user_message_lower for word in ['aventura', 'viaje', 'épico', 'acción']):
+            genero = "aventura"
+        elif any(word in user_message_lower for word in ['clásico', 'clásica', 'literatura']):
+            genero = "clasica"
+        
+        print(f"🔍 Detectado - Estado: {estado_animo}, Género: {genero}")  # Debug
+        
+        # Usar el agente simple para recomendar
         resultado = agent.recomendar(estado_animo, genero)
         
+        # Adaptar la respuesta al nuevo formato
         return jsonify({
             'success': True,
-            'recommendation': resultado
+            'recommendation': {
+                'libro': resultado['libro'],
+                'confianza': 0.85,  # Simulado
+                'analisis': {
+                    'emotion': estado_animo,
+                    'emotion_confidence': 0.8,
+                    'genre': genero,
+                    'genre_confidence': 0.75
+                },
+                'explicacion': resultado['proceso']['razonamiento']['explicacion']
+            }
         })
         
     except Exception as e:
+        print(f"❌ Error en recomendación: {e}")
+        import traceback
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/biblioteca')
@@ -166,6 +217,22 @@ def get_libros_recientes():
             ],
             'total': 1
         })
+
+@app.route('/api/user-stats')
+def get_user_stats():
+    """Retorna estadísticas del usuario (simulado por ahora)"""
+    try:
+        return jsonify({
+            'success': True,
+            'stats': {
+                'total_interactions': 0,
+                'favorite_genres': [],
+                'favorite_emotions': []
+            }
+        })
+    except Exception as e:
+        print(f"Error obteniendo stats: {e}")
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/health')
 def health():
