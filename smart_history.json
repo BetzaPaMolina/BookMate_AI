@@ -1,385 +1,138 @@
 {
   "interactions": [
     {
-      "timestamp": "2025-11-03T18:53:32.247517",
-      "user_message": "Me siento melancólico, necesito algo profundo",
-      "emotion": "triste",
-      "confidence": 1.0,
-      "recommended": "Memorias del subsuelo",
-      "categoria": "filosofia",
-      "score": 6.0
-    },
-    {
-      "timestamp": "2025-11-03T18:53:48.388262",
-      "user_message": "Quiero algo más triste",
-      "emotion": "triste",
-      "confidence": 1.0,
-      "recommended": "Pedro Páramo",
-      "categoria": "realismo_magico",
-      "score": 7.199999999999999
-    },
-    {
-      "timestamp": "2025-11-03T18:55:09.067082",
-      "user_message": "Estoy molesta",
-      "emotion": "neutral",
-      "confidence": 0.0,
-      "recommended": "Anna Karenina",
-      "categoria": "romance",
-      "score": 1.4
-    },
-    {
-      "timestamp": "2025-11-03T18:55:55.175751",
-      "user_message": "dije que estoy molesta y quiero algo que me ayude a canalizarlo",
-      "emotion": "neutral",
-      "confidence": 0.0,
-      "recommended": "Los hermanos Karamázov",
-      "categoria": "clasica",
-      "score": 3.5
-    },
-    {
-      "timestamp": "2025-11-03T18:57:29.452928",
-      "user_message": "Estoy feliz pero quiero algo que me haga llorar",
-      "emotion": "feliz",
-      "confidence": 1.0,
-      "recommended": "La Odisea",
-      "categoria": "aventura",
-      "score": 4.0
-    },
-    {
-      "timestamp": "2025-11-03T18:57:56.449738",
-      "user_message": "hoy me siento vacía, recomiendame algo que me acompañe",
-      "emotion": "neutral",
-      "confidence": 0.0,
-      "recommended": "El líder mentor",
-      "categoria": "motivacional",
-      "score": 1.4
-    },
-    {
-      "timestamp": "2025-11-03T19:13:02.953436",
-      "user_message": "Me siento vacía, como si nada tuviera sentido",
-      "emotion": "triste",
-      "confidence": 0.5454545454545454,
-      "recommended": "Pedro Páramo",
-      "categoria": "realismo_magico",
-      "score": 6.18,
-      "special_contexts": []
-    },
-    {
-      "timestamp": "2025-11-03T19:13:07.901897",
-      "user_message": "más triste",
-      "emotion": "triste",
-      "confidence": 1.0,
-      "recommended": "Memorias del subsuelo",
-      "categoria": "filosofia",
-      "score": 4.93,
-      "special_contexts": []
-    },
-    {
-      "timestamp": "2025-11-03T19:13:32.911064",
-      "user_message": "Estoy feliz pero quiero algo que me haga llorar",
-      "emotion": "triste",
-      "confidence": 1.0,
-      "recommended": "María",
-      "categoria": "romance",
-      "score": 7.8,
-      "special_contexts": [
-        "catarsis"
-      ]
-    },
-    {
-      "timestamp": "2025-11-03T19:13:42.644855",
-      "user_message": "más triste",
-      "emotion": "triste",
-      "confidence": 1.0,
-      "recommended": "Los miserables",
-      "categoria": "clasica",
-      "score": 5.25,
-      "special_contexts": []
-    },
-    {
-      "timestamp": "2025-11-03T19:14:10.175651",
-      "user_message": "Estoy triste pero no quiero empeorar",
-      "emotion": "motivado",
-      "confidence": 0.5357142857142857,
-      "recommended": "El líder mentor",
-      "categoria": "motivacional",
-      "score": 6.180000000000001,
-      "special_contexts": [
-        "no_empeorar"
-      ]
-    },
-    {
-      "timestamp": "2025-11-03T19:15:48.439543",
-      "user_message": "quiero algo feliz",
-      "emotion": "feliz",
-      "confidence": 1.0,
-      "recommended": "La Odisea",
-      "categoria": "aventura",
-      "score": 4.4799999999999995,
-      "special_contexts": []
-    },
-    {
-      "timestamp": "2025-11-03T19:15:56.167476",
-      "user_message": "quiero algo feminista",
-      "emotion": "neutral",
-      "confidence": 0.0,
-      "recommended": "Fahrenheit 451",
-      "categoria": "distopia",
-      "score": 1.65,
-      "special_contexts": []
-    },
-    {
-      "timestamp": "2025-11-03T19:16:26.751038",
-      "user_message": "estoy molesta",
-      "emotion": "ansioso",
-      "confidence": 1.0,
-      "recommended": "Los hermanos Karamázov",
-      "categoria": "clasica",
-      "score": 4.58,
-      "special_contexts": []
-    },
-    {
-      "timestamp": "2025-11-03T19:17:42.401731",
-      "user_message": "Me siento nostálgica, pero con ganas de esperanza. ¿Qué me recomiendas",
+      "timestamp": "2025-11-03T19:57:53.821233",
+      "user_message": "Me siento nostálgica, pero con ganas de esperanza. ¿Qué me recomiendas?",
       "emotion": "nostálgico",
       "confidence": 1.0,
       "recommended": "Siddharta",
       "categoria": "filosofia",
-      "score": 4.65,
+      "score": 4.0,
       "special_contexts": [
         "esperanza"
       ]
     },
     {
-      "timestamp": "2025-11-03T19:18:56.478485",
-      "user_message": "quiero algo romantico",
-      "emotion": "neutral",
-      "confidence": 0.0,
-      "recommended": "Anna Karenina",
-      "categoria": "romance",
-      "score": 2.7800000000000002,
-      "special_contexts": []
-    },
-    {
-      "timestamp": "2025-11-03T19:19:03.859486",
-      "user_message": "algo más romantico",
-      "emotion": "neutral",
-      "confidence": 0.0,
-      "recommended": "Soy un gato",
-      "categoria": "humor",
-      "score": 1.15,
-      "special_contexts": []
-    },
-    {
-      "timestamp": "2025-11-03T19:19:22.812723",
+      "timestamp": "2025-11-03T19:57:53.822234",
       "user_message": "Estoy enojada con el mundo. Quiero algo que me ayude a canalizarlo.",
       "emotion": "ansioso",
       "confidence": 1.0,
-      "recommended": "Moby Dick",
-      "categoria": "aventura",
-      "score": 4.95,
+      "recommended": "1984",
+      "categoria": "distopia",
+      "score": 4.1,
       "special_contexts": []
     },
     {
-      "timestamp": "2025-11-03T19:19:28.343053",
+      "timestamp": "2025-11-03T19:57:53.823234",
       "user_message": "Hoy me siento vacía, como si nada tuviera sentido. ¿Tienes algo que me acompañe en eso?",
       "emotion": "triste",
       "confidence": 0.5454545454545454,
-      "recommended": "1984",
-      "categoria": "distopia",
-      "score": 2.1,
+      "recommended": "Pedro Páramo",
+      "categoria": "realismo_magico",
+      "score": 9.7,
       "special_contexts": [
         "catarsis"
       ]
     },
     {
-      "timestamp": "2025-11-03T19:19:33.254184",
+      "timestamp": "2025-11-03T19:57:53.825230",
       "user_message": "Estoy feliz, pero quiero algo que me haga llorar.",
       "emotion": "triste",
       "confidence": 1.0,
-      "recommended": "Crimen y castigo",
-      "categoria": "filosofia",
-      "score": 1.25,
+      "recommended": "María",
+      "categoria": "romance",
+      "score": 7.25,
       "special_contexts": [
         "catarsis"
       ]
     },
     {
-      "timestamp": "2025-11-03T19:19:41.966209",
+      "timestamp": "2025-11-03T19:57:53.826233",
       "user_message": "Ya leí Pedro Páramo. Dame otra opción igual de triste pero diferente.",
-      "emotion": "triste",
-      "confidence": 1.0,
-      "recommended": "Demian",
-      "categoria": "filosofia",
-      "score": 1.3,
-      "special_contexts": []
-    },
-    {
-      "timestamp": "2025-11-03T19:19:51.023296",
-      "user_message": "No quiero clásicos esta vez. ¿Tienes algo contemporáneo que se sienta igual de profundo?",
-      "emotion": "pensativo",
-      "confidence": 1.0,
-      "recommended": "Un mundo feliz",
-      "categoria": "distopia",
-      "score": 4.3,
-      "special_contexts": [
-        "intenso",
-        "no_empeorar"
-      ]
-    },
-    {
-      "timestamp": "2025-11-03T19:19:57.998097",
-      "user_message": "Sorpréndeme con algo que nunca me hayas recomendado.",
-      "emotion": "curioso",
-      "confidence": 1.0,
-      "recommended": "Jane Eyre",
-      "categoria": "romance",
-      "score": 2.0,
-      "special_contexts": []
-    },
-    {
-      "timestamp": "2025-11-03T19:20:08.228300",
-      "user_message": "Quiero algo feminista, triste y con una protagonista fuerte",
       "emotion": "triste",
       "confidence": 1.0,
       "recommended": "Los hermanos Karamázov",
       "categoria": "clasica",
-      "score": -1.04,
+      "score": 4.6,
+      "special_contexts": []
+    },
+    {
+      "timestamp": "2025-11-03T19:57:53.828260",
+      "user_message": "Sorpréndeme con algo que nunca me hayas recomendado.",
+      "emotion": "curioso",
+      "confidence": 1.0,
+      "recommended": "Moby Dick",
+      "categoria": "aventura",
+      "score": 4.45,
+      "special_contexts": []
+    },
+    {
+      "timestamp": "2025-11-03T19:57:53.829673",
+      "user_message": "Quiero algo feminista, triste y con una protagonista fuerte.",
+      "emotion": "triste",
+      "confidence": 1.0,
+      "recommended": "Memorias del subsuelo",
+      "categoria": "filosofia",
+      "score": 6.85,
       "special_contexts": [
         "intenso"
       ]
     },
     {
-      "timestamp": "2025-11-03T19:20:12.284860",
-      "user_message": "Dame algo corto, filosófico y que me deje pensando.",
-      "emotion": "pensativo",
-      "confidence": 1.0,
-      "recommended": "Pedro Páramo",
-      "categoria": "realismo_magico",
-      "score": -2.99,
-      "special_contexts": []
-    },
-    {
-      "timestamp": "2025-11-03T19:20:20.755555",
+      "timestamp": "2025-11-03T19:57:53.832309",
       "user_message": "¿Tienes algo sobre duelo, pero que no sea deprimente?",
       "emotion": "triste",
       "confidence": 1.0,
-      "recommended": "María",
-      "categoria": "romance",
-      "score": -2.419999999999998,
+      "recommended": "El líder mentor",
+      "categoria": "motivacional",
+      "score": 4.6,
       "special_contexts": []
     },
     {
-      "timestamp": "2025-11-03T19:20:29.219538",
+      "timestamp": "2025-11-03T19:57:53.833630",
       "user_message": "Estoy triste pero no quiero ponerme peor. ¿Qué me recomiendas?",
       "emotion": "motivado",
       "confidence": 0.5357142857142857,
       "recommended": "Los miserables",
       "categoria": "clasica",
-      "score": -1.5699999999999985,
+      "score": 6.1,
       "special_contexts": [
         "no_empeorar"
       ]
     },
     {
-      "timestamp": "2025-11-03T19:20:43.774668",
-      "user_message": "Quiero algo que me haga sentir incómoda, pero que valga la pena.",
-      "emotion": "neutral",
-      "confidence": 0.0,
-      "recommended": "Memorias del subsuelo",
-      "categoria": "filosofia",
-      "score": -2.4899999999999984,
-      "special_contexts": [
-        "catarsis"
-      ]
-    },
-    {
-      "timestamp": "2025-11-03T19:20:49.653956",
+      "timestamp": "2025-11-03T19:57:53.835127",
       "user_message": "No sé cómo me siento. Solo recomiéndame algo que me transforme.",
       "emotion": "triste",
       "confidence": 0.5,
-      "recommended": "Los miserables",
-      "categoria": "clasica",
-      "score": -1.1899999999999995,
-      "special_contexts": [
-        "intenso"
-      ]
-    },
-    {
-      "timestamp": "2025-11-03T19:29:13.867433",
-      "user_message": "Me siento melancólico, necesito algo profundo",
-      "emotion": "triste",
-      "confidence": 0.5,
-      "recommended": "Los miserables",
-      "categoria": "clasica",
-      "score": 9.090000000000002,
-      "special_contexts": [
-        "intenso"
-      ]
-    },
-    {
-      "timestamp": "2025-11-03T19:38:49.693525",
-      "user_message": "Me siento melancólico, necesito algo profundo",
-      "emotion": "triste",
-      "confidence": 0.5,
-      "recommended": "Pedro Páramo",
-      "categoria": "realismo_magico",
-      "score": 10.09,
-      "special_contexts": [
-        "intenso"
-      ]
-    },
-    {
-      "timestamp": "2025-11-03T19:39:31.684857",
-      "user_message": "Ya leí Pedro Páramo, dame otra opción igual de triste.",
-      "emotion": "triste",
-      "confidence": 1.0,
       "recommended": "Anna Karenina",
       "categoria": "romance",
-      "score": 8.06,
-      "special_contexts": []
-    },
-    {
-      "timestamp": "2025-11-03T19:39:58.194672",
-      "user_message": "Quiero algo con una mujer protagonista y duelo.",
-      "emotion": "triste",
-      "confidence": 1.0,
-      "recommended": "María",
-      "categoria": "romance",
-      "score": 8.61,
-      "special_contexts": []
+      "score": 7.2,
+      "special_contexts": [
+        "intenso"
+      ]
     }
   ],
   "preferences": {
-    "triste": 5.4,
-    "pensativo": 2.800000000000001,
-    "neutral": 1.4,
-    "romántico": 0.7,
-    "feliz": 0.6,
-    "curioso": 0.8,
-    "motivado": 1.4000000000000001,
-    "confundido": 0.9999999999999999,
-    "nostálgico": 0.5,
-    "ansioso": 1.1,
-    "aburrido": 0.1
+    "nostálgico": 0.30000000000000004,
+    "pensativo": 0.7999999999999999,
+    "curioso": 0.4,
+    "confundido": 0.4,
+    "ansioso": 0.5,
+    "triste": 1.9000000000000004,
+    "romántico": 0.2,
+    "motivado": 0.4
   },
   "book_scores": {
-    "Memorias del subsuelo_Fiódor Dostoievski": 0.30000000000000004,
-    "Pedro Páramo_Juan Rulfo": 0.4,
-    "Anna Karenina_León Tolstói": 0.30000000000000004,
-    "Los hermanos Karamázov_Fiódor Dostoievski": 0.30000000000000004,
-    "La Odisea_Homero": 0.2,
-    "El líder mentor_Tony Dungy": 0.2,
-    "María_Jorge Isaacs": 0.30000000000000004,
-    "Los miserables_Victor Hugo": 0.4,
-    "Fahrenheit 451_Ray Bradbury": 0.1,
     "Siddharta_Hermann Hesse": 0.1,
-    "Soy un gato_Natsume Sōseki": 0.1,
-    "Moby Dick_Herman Melville": 0.1,
     "1984_George Orwell": 0.1,
-    "Crimen y castigo_Fiódor Dostoievski": 0.1,
-    "Demian_Hermann Hesse": 0.1,
-    "Un mundo feliz_Aldous Huxley": 0.1,
-    "Jane Eyre_Charlotte Brontë": 0.1
+    "Pedro Páramo_Juan Rulfo": 0.1,
+    "María_Jorge Isaacs": 0.1,
+    "Los hermanos Karamázov_Fiódor Dostoievski": 0.1,
+    "Moby Dick_Herman Melville": 0.1,
+    "Memorias del subsuelo_Fiódor Dostoievski": 0.1,
+    "El líder mentor_Tony Dungy": 0.1,
+    "Los miserables_Victor Hugo": 0.1,
+    "Anna Karenina_León Tolstói": 0.1
   }
 }

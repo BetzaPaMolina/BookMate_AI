@@ -2,67 +2,11 @@ from flask import Flask, render_template, request, jsonify
 from smart_recommender import SmartRecommender
 from feedback_system import FeedbackSystem
 
-feedback_sys = FeedbackSystem()
 app = Flask(__name__)
 
-# Instanciar el recomendador inteligente
+# Instanciar el recomendador inteligente y sistema de feedback
 recommender = SmartRecommender()
-
-@app.route('/api/feedback', methods=['POST'])
-def submit_feedback():
-    """Usuario califica la última recomendación"""
-    try:
-        data = request.get_json()
-        recommendation = data.get('recommendation')
-        feedback_type = data.get('feedback_type')  # 'positive', 'negative', 'neutral', 'wrong_emotion'
-        comment = data.get('comment', None)
-        
-        result = feedback_sys.process_feedback(recommendation, feedback_type, comment)
-        
-        return jsonify({
-            'success': True,
-            'result': result
-        })
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/feedback-stats')
-def get_feedback_stats():
-    """Retorna estadísticas de aprendizaje"""
-    try:
-        stats = feedback_sys.get_feedback_stats()
-        return jsonify({
-            'success': True,
-            'stats': stats
-        })
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/feedback', methods=['POST'])
-def submit_feedback():
-    data = request.get_json()
-    book_id = data.get('book_id')
-    feedback_type = data.get('feedback_type')
-    
-    # Procesar con FeedbackSystem
-    result = feedback_sys.process_feedback(
-        data.get('recommendation'),
-        feedback_type
-    )
-    
-    return jsonify({'success': True, 'result': result})
-
-@app.route('/api/add-book', methods=['POST'])
-def add_book():
-    book_data = request.get_json()
-    
-    # Agregar a smart_recommender
-    recommender.add_custom_book(book_data)
-    
-    return jsonify({
-        'success': True,
-        'message': f"Libro '{book_data['titulo']}' agregado"
-    })
+feedback_sys = FeedbackSystem()
 
 @app.route('/')
 def home():
@@ -89,6 +33,83 @@ def recomendar():
         
     except Exception as e:
         print(f"❌ Error en recomendación: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
+# CORREGIDO: Solo UNA función para /api/feedback
+@app.route('/api/feedback', methods=['POST'])
+def submit_feedback():
+    """Usuario califica la última recomendación"""
+    try:
+        data = request.get_json()
+        recommendation = data.get('recommendation')
+        feedback_type = data.get('feedback_type')
+        comment = data.get('comment', None)
+        
+        # Procesar con FeedbackSystem
+        result = feedback_sys.process_feedback(recommendation, feedback_type, comment)
+        
+        return jsonify({
+            'success': True,
+            'result': result
+        })
+    except Exception as e:
+        print(f"❌ Error en feedback: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/feedback-stats')
+def get_feedback_stats():
+    """Retorna estadísticas de aprendizaje"""
+    try:
+        stats = feedback_sys.get_feedback_stats()
+        return jsonify({
+            'success': True,
+            'stats': stats
+        })
+    except Exception as e:
+        print(f"Error obteniendo stats: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/add-book', methods=['POST'])
+def add_book():
+    """Agregar nuevo libro a la biblioteca"""
+    try:
+        book_data = request.get_json()
+        
+        # Validar datos requeridos
+        if not all(k in book_data for k in ['titulo', 'autor', 'descripcion', 'categoria']):
+            return jsonify({'error': 'Faltan datos requeridos'}), 400
+        
+        # Agregar emociones y metadatos
+        if 'emociones' not in book_data:
+            book_data['emociones'] = []
+        
+        # Agregar color y emoji por defecto
+        book_data.setdefault('color', '#9B8BC4')
+        book_data.setdefault('emoji', '📖')
+        book_data.setdefault('impacto', 'reflexivo')
+        book_data.setdefault('intensidad', 'media')
+        book_data.setdefault('temas', [])
+        
+        # Agregar a la categoría correspondiente en el recommender
+        categoria = book_data['categoria']
+        if categoria not in recommender.books:
+            recommender.books[categoria] = []
+        
+        recommender.books[categoria].append(book_data)
+        
+        # Guardar en historial para persistencia
+        recommender.save_history()
+        
+        return jsonify({
+            'success': True,
+            'message': f"Libro '{book_data['titulo']}' de {book_data['autor']} agregado correctamente"
+        })
+    except Exception as e:
+        print(f"Error agregando libro: {e}")
         import traceback
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500
@@ -244,18 +265,19 @@ def reset_session():
 
 @app.route('/api/health')
 def health():
+    """Health check del servicio"""
     return jsonify({
         'status': 'active', 
         'service': 'BookMate AI (Smart Learning)',
         'total_books': len(recommender.get_all_books_flat()),
-        'total_interactions': len(recommender.history.get('interactions', []))
+        'total_interactions': len(recommender.history.get('interactions', [])),
+        'total_feedback': feedback_sys.feedback_data.get('total_feedback_count', 0)
     })
 
-
-
 if __name__ == '__main__':
-    print("🚀 Iniciando BookMate AI (Smart Learning)...")
+    print("🚀 Iniciando BookMate AI (Smart Learning con Feedback)...")
     print("📖 Abre tu navegador en: http://localhost:5000")
     print(f"📚 Biblioteca: {len(recommender.get_all_books_flat())} libros")
     print(f"🧠 Historial: {len(recommender.history.get('interactions', []))} interacciones previas")
+    print(f"👍 Feedback total: {feedback_sys.feedback_data.get('total_feedback_count', 0)}")
     app.run(debug=True, host='0.0.0.0', port=5000)
