@@ -1,5 +1,6 @@
 let allBooks = [];
 let currentCategory = 'todos';
+let learningStats = null;
 
 // Load library books on page load
 async function loadLibrary() {
@@ -42,7 +43,7 @@ function displayBooks(books) {
     });
 }
 
-// Load recent books with reviews
+// Load recent books
 async function loadRecentBooks() {
     try {
         const response = await fetch('/api/libros-recientes');
@@ -66,8 +67,75 @@ async function loadRecentBooks() {
         }
     } catch (error) {
         console.error('Error loading recent books:', error);
-        document.getElementById('recent-books-list').innerHTML = '<p style="text-align:center; color: var(--text-light); padding: 10px;">Error al cargar reseñas</p>';
     }
+}
+
+// Load learning stats
+async function loadLearningStats() {
+    try {
+        const response = await fetch('/api/user-stats');
+        const data = await response.json();
+        
+        if (data.success) {
+            learningStats = data.stats;
+            displayLearningStats();
+        }
+    } catch (error) {
+        console.error('Error loading stats:', error);
+    }
+}
+
+// Display learning stats
+function displayLearningStats() {
+    if (!learningStats) return;
+    
+    const statsContainer = document.getElementById('learning-stats');
+    if (!statsContainer) return;
+    
+    const total = learningStats.total_interactions;
+    const sessionCount = learningStats.session_recommended;
+    
+    let statsHTML = `
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">${total}</div>
+                <div class="stat-label">📚 Interacciones totales</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">${sessionCount}</div>
+                <div class="stat-label">💬 En esta sesión</div>
+            </div>
+        </div>
+    `;
+    
+    // Top emotions
+    if (learningStats.top_emotions && learningStats.top_emotions.length > 0) {
+        statsHTML += '<div class="stat-section"><h4>🎭 Emociones más frecuentes</h4><div class="emotion-bars">';
+        learningStats.top_emotions.forEach(item => {
+            const percentage = total > 0 ? (item.count / total * 100).toFixed(0) : 0;
+            statsHTML += `
+                <div class="emotion-bar">
+                    <span>${item.emotion}</span>
+                    <div class="bar-bg">
+                        <div class="bar-fill" style="width: ${percentage}%"></div>
+                    </div>
+                    <span>${item.count}</span>
+                </div>
+            `;
+        });
+        statsHTML += '</div></div>';
+    }
+    
+    // Top books
+    if (learningStats.top_books && learningStats.top_books.length > 0) {
+        statsHTML += '<div class="stat-section"><h4>⭐ Libros más recomendados</h4><ul class="top-books-list">';
+        learningStats.top_books.forEach(item => {
+            statsHTML += `<li>${item.book} <span>(${item.count}x)</span></li>`;
+        });
+        statsHTML += '</ul></div>';
+    }
+    
+    statsContainer.innerHTML = statsHTML;
 }
 
 // Category filter
@@ -82,13 +150,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (currentCategory === 'todos') {
                 displayBooks(allBooks);
             } else {
-                // Filtrar libros por categoría (implementación simple)
                 displayBooks(allBooks);
             }
         });
     });
     
-    // Suggestion chips click handler
+    // Suggestion chips
     document.querySelectorAll('.suggestion-chip').forEach(chip => {
         chip.addEventListener('click', function() {
             const userMessageInput = document.getElementById('user-message');
@@ -100,10 +167,28 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load initial data
     loadLibrary();
     loadRecentBooks();
+    loadLearningStats();
 });
 
 function showAllBooks() {
     displayBooks(allBooks);
+}
+
+// Reset session button
+async function resetSession() {
+    try {
+        const response = await fetch('/api/reset-session', {
+            method: 'POST'
+        });
+        const data = await response.json();
+        
+        if (data.success) {
+            addMessage('bot', '🔄 ' + data.message);
+            loadLearningStats(); // Actualizar stats
+        }
+    } catch (error) {
+        console.error('Error resetting session:', error);
+    }
 }
 
 // Chat functionality
@@ -112,24 +197,20 @@ const chatMessages = document.getElementById('chat-messages');
 const userMessageInput = document.getElementById('user-message');
 const sendBtn = document.getElementById('send-btn');
 
-// Form submission
 form.addEventListener('submit', async function(e) {
     e.preventDefault();
     
     const userMessage = userMessageInput.value.trim();
-    
-    console.log('📝 Formulario enviado:', userMessage);  // Debug
     
     if (!userMessage) {
         addMessage('bot', '⚠️ Por favor escribe algo sobre lo que buscas.');
         return;
     }
 
-    // Add user message
     addMessage('user', userMessage);
     userMessageInput.value = '';
     
-    // Show typing indicator
+    // Typing indicator
     const typingDiv = document.createElement('div');
     typingDiv.className = 'message bot typing-indicator';
     typingDiv.id = 'typing';
@@ -140,8 +221,6 @@ form.addEventListener('submit', async function(e) {
     sendBtn.disabled = true;
 
     try {
-        console.log('🚀 Enviando petición...');  // Debug
-        
         const response = await fetch('/recomendar', {
             method: 'POST',
             headers: {
@@ -152,24 +231,22 @@ form.addEventListener('submit', async function(e) {
             })
         });
         
-        console.log('📨 Respuesta recibida:', response.status);  // Debug
-        
         const data = await response.json();
-        console.log('📦 Datos:', data);  // Debug
         
-        // Remove typing indicator
         document.getElementById('typing')?.remove();
         
         if (data.success) {
             displayRecommendation(data.recommendation);
+            // Actualizar stats después de cada recomendación
+            setTimeout(() => loadLearningStats(), 500);
         } else {
             addMessage('bot', '❌ ' + data.error);
         }
         
     } catch (error) {
-        console.error('❌ Error completo:', error);  // Debug
+        console.error('❌ Error:', error);
         document.getElementById('typing')?.remove();
-        addMessage('bot', '❌ Error de conexión con el servidor: ' + error.message);
+        addMessage('bot', '❌ Error de conexión: ' + error.message);
     } finally {
         sendBtn.disabled = false;
     }
@@ -187,13 +264,15 @@ function addMessage(type, text) {
 }
 
 function displayRecommendation(data) {
-    console.log('🎯 Mostrando recomendación:', data);  // Debug
-    
     const messageDiv = document.createElement('div');
     messageDiv.className = 'message bot';
     
     const confidence = (data.confianza * 100).toFixed(0);
     const confidenceColor = data.confianza > 0.7 ? 'var(--green)' : data.confianza > 0.5 ? 'var(--yellow)' : 'var(--coral)';
+    
+    // Score de aprendizaje
+    const score = data.analisis.score || 0;
+    const scoreColor = score > 5 ? 'var(--green)' : score > 2 ? 'var(--yellow)' : 'var(--coral)';
     
     messageDiv.innerHTML = `
         <div>🎯 ¡Tengo la recomendación perfecta para ti!</div>
@@ -205,9 +284,12 @@ function displayRecommendation(data) {
                 <h4>${data.libro.titulo}</h4>
                 <p style="color: var(--purple); margin-bottom: 5px;">${data.libro.autor}</p>
                 <p>${data.libro.descripcion}</p>
-                <div style="margin-top: 8px; font-size: 11px;">
+                <div style="margin-top: 8px; font-size: 11px; display: flex; gap: 5px; flex-wrap: wrap;">
                     <span style="background: ${confidenceColor}; color: white; padding: 3px 8px; border-radius: 10px;">
                         Confianza: ${confidence}%
+                    </span>
+                    <span style="background: ${scoreColor}; color: white; padding: 3px 8px; border-radius: 10px;">
+                        🧠 Score: ${score.toFixed(1)}
                     </span>
                 </div>
             </div>
@@ -216,9 +298,21 @@ function displayRecommendation(data) {
             <strong>💡 ¿Por qué este libro?</strong><br>
             ${data.explicacion}
         </div>
+    `;
+    
+    // Alternativas
+    if (data.alternativas && data.alternativas.length > 0) {
+        messageDiv.innerHTML += `
+            <div style="margin-top: 10px; font-size: 12px;">
+                <strong>📚 Alternativas:</strong> ${data.alternativas.join(', ')}
+            </div>
+        `;
+    }
+    
+    messageDiv.innerHTML += `
         <div class="quick-actions">
-            <button class="quick-btn" onclick="alert('Función en desarrollo')">📚 Más info</button>
-            <button class="quick-btn" onclick="alert('Función en desarrollo')">🔖 Guardar</button>
+            <button class="quick-btn" onclick="resetSession()">🔄 Reiniciar</button>
+            <button class="quick-btn" onclick="loadLearningStats()">📊 Ver stats</button>
         </div>
         <div class="message-time">${new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</div>
     `;
@@ -231,15 +325,18 @@ function displayRecommendation(data) {
         setTimeout(() => {
             const emotion_emojis = {
                 'feliz': '😊', 'triste': '😢', 'pensativo': '🤔', 
-                'motivado': '💪', 'aburrido': '😴', 'ansioso': '😰', 'curioso': '🧐'
+                'motivado': '💪', 'aburrido': '😴', 'ansioso': '😰', 
+                'curioso': '🧐', 'romántico': '💕'
             };
             
             const emoji = emotion_emojis[data.analisis.emotion] || '🎭';
             
             addMessage('bot', `
-                🤖 <strong>Análisis:</strong><br><br>
+                🤖 <strong>Análisis del sistema:</strong><br><br>
                 ${emoji} <strong>Estado detectado:</strong> ${data.analisis.emotion}<br>
-                📚 <strong>Género inferido:</strong> ${data.analisis.genre}
+                🎯 <strong>Confianza emocional:</strong> ${(data.analisis.emotion_confidence * 100).toFixed(0)}%<br>
+                🧠 <strong>Score de aprendizaje:</strong> ${data.analisis.score.toFixed(2)}<br>
+                <small style="opacity: 0.8;">Este score se basa en tu historial y preferencias</small>
             `);
         }, 500);
     }

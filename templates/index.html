@@ -3,20 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BookMate AI - Tu Asistente Personal de Lectura</title>
+    <title>BookMate AI - Con Aprendizaje Real</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Estilos para el panel de estadísticas */
+        .learning-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        }
+        
+        .learning-panel h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-card {
+            background: var(--bg-card);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--purple);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+        
+        .stat-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid var(--bg-card);
+        }
+        
+        .stat-section h4 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+        
+        .emotion-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .emotion-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+        }
+        
+        .emotion-bar > span:first-child {
+            min-width: 80px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .bar-bg {
+            flex: 1;
+            height: 8px;
+            background: var(--bg-card);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--purple), var(--purple-dark));
+            transition: width 0.5s ease;
+        }
+        
+        .emotion-bar > span:last-child {
+            min-width: 30px;
+            text-align: right;
+            color: var(--text-light);
+        }
+        
+        .top-books-list {
+            list-style: none;
+            font-size: 12px;
+            color: var(--text-dark);
+        }
+        
+        .top-books-list li {
+            padding: 8px;
+            background: var(--bg-card);
+            border-radius: 8px;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .top-books-list li span {
+            color: var(--purple);
+            font-weight: 600;
+        }
+    </style>
 </head>
 <body>
     <div class="main-container">
         <!-- Left Panel: Book Discovery -->
         <div class="left-panel">
-            <!-- Header (SIN barra de búsqueda) -->
+            <!-- Header -->
             <div class="header">
                 <div class="logo">
                     <div class="logo-icon">📚</div>
                     <div>
                         <h1>BookMate AI</h1>
-                        <p>Tu asistente de lectura</p>
+                        <p>🧠 Con aprendizaje real</p>
                     </div>
                 </div>
                 <div class="header-actions">
@@ -35,7 +151,7 @@
                 <div class="category-chip" data-category="clasica">🏛️ Clásica</div>
             </div>
 
-            <!-- Mi Biblioteca Section (antes era "Popular") -->
+            <!-- Mi Biblioteca Section -->
             <div class="section-header">
                 <h2>Mi Biblioteca</h2>
                 <span class="view-all" onclick="showAllBooks()">Ver todo →</span>
@@ -43,6 +159,29 @@
 
             <div class="books-grid" id="library-books">
                 <div class="loading-spinner">Cargando biblioteca...</div>
+            </div>
+
+            <!-- Learning Stats Panel -->
+            <div class="learning-panel">
+                <h3>🧠 Panel de Aprendizaje</h3>
+                <p style="font-size: 12px; color: var(--text-light); margin-bottom: 15px;">
+                    El sistema aprende de tus preferencias en tiempo real
+                </p>
+                <div id="learning-stats">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">0</div>
+                            <div class="stat-label">📚 Interacciones totales</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">0</div>
+                            <div class="stat-label">💬 En esta sesión</div>
+                        </div>
+                    </div>
+                    <p style="font-size: 11px; color: var(--text-light); text-align: center;">
+                        Empieza a chatear para ver estadísticas
+                    </p>
+                </div>
             </div>
 
             <!-- Featured Section - Recent Books -->
@@ -55,8 +194,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Listas destacadas ELIMINADAS -->
         </div>
 
         <!-- Right Panel: AI Chat -->
@@ -64,17 +201,25 @@
             <div class="chat-header">
                 <div class="chat-title">
                     <div>
-                        <h3>Chat</h3>
-                        <p class="chat-subtitle">Obtén recomendaciones personalizadas</p>
+                        <h3>Chat con IA</h3>
+                        <p class="chat-subtitle">Sistema de aprendizaje activo</p>
                     </div>
                 </div>
-                <span class="agent-badge">🤖 AI Activo</span>
+                <span class="agent-badge">🧠 Aprendiendo</span>
             </div>
 
             <div class="chat-messages" id="chat-messages">
                 <div class="message bot">
-                    <div>¡Hola! 👋 Soy tu asistente de lectura BookMate AI.</div>
-                    <div style="margin-top: 8px;">Cuéntame cómo te sientes hoy y qué tipo de libros te gustan. Te ayudaré a encontrar la lectura perfecta para ti.</div>
+                    <div>¡Hola! 👋 Soy BookMate AI con <strong>aprendizaje real</strong>.</div>
+                    <div style="margin-top: 8px;">
+                        🧠 Aprendo de cada conversación<br>
+                        🎯 Evito repetir recomendaciones<br>
+                        📊 Analizo tus emociones en contexto<br>
+                        💾 Recuerdo tus preferencias entre sesiones
+                    </div>
+                    <div style="margin-top: 8px;">
+                        Cuéntame cómo te sientes y qué buscas. ¡Veamos cómo mejoro con el tiempo!
+                    </div>
                     <div class="message-time">Ahora</div>
                 </div>
             </div>
@@ -86,7 +231,7 @@
                         <textarea 
                             id="user-message" 
                             name="message" 
-                            placeholder="Ejemplo: 'Me siento nostálgico y quiero algo que me haga reflexionar sobre la vida' o 'Busco algo ligero y divertido para desconectar'"
+                            placeholder="Ejemplo: 'Me siento nostálgico y quiero algo que me haga reflexionar sobre la vida' o 'Dame algo más triste que lo anterior'"
                             rows="3"
                             required
                         ></textarea>
@@ -94,7 +239,8 @@
                             <span class="suggestion-chip" data-text="Me siento melancólico, necesito algo profundo">😔 Melancólico</span>
                             <span class="suggestion-chip" data-text="Quiero aventura y emoción">🗺️ Aventura</span>
                             <span class="suggestion-chip" data-text="Busco algo filosófico que me haga pensar">💭 Filosófico</span>
-                            <span class="suggestion-chip" data-text="Dame algo ligero y entretenido">😊 Entretenido</span>
+                            <span class="suggestion-chip" data-text="Algo más triste que acompañe mi estado">😢 Más triste</span>
+                            <span class="suggestion-chip" data-text="Sorpréndeme con algo diferente">🎲 Sorpresa</span>
                         </div>
                     </div>
 
