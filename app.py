@@ -37,7 +37,33 @@ def get_feedback_stats():
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@app.route('/api/feedback', methods=['POST'])
+def submit_feedback():
+    data = request.get_json()
+    book_id = data.get('book_id')
+    feedback_type = data.get('feedback_type')
     
+    # Procesar con FeedbackSystem
+    result = feedback_sys.process_feedback(
+        data.get('recommendation'),
+        feedback_type
+    )
+    
+    return jsonify({'success': True, 'result': result})
+
+@app.route('/api/add-book', methods=['POST'])
+def add_book():
+    book_data = request.get_json()
+    
+    # Agregar a smart_recommender
+    recommender.add_custom_book(book_data)
+    
+    return jsonify({
+        'success': True,
+        'message': f"Libro '{book_data['titulo']}' agregado"
+    })
+
 @app.route('/')
 def home():
     return render_template('index.html')

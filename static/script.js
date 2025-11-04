@@ -368,8 +368,19 @@ async function submitFeedback(button, feedbackType) {
     const recommendation = JSON.parse(container.dataset.recommendation);
     
     // Deshabilitar botones
-    container.querySelectorAll('.feedback-btn').forEach(btn => btn.disabled = true);
+    //container.querySelectorAll('.feedback-btn').forEach(btn => btn.disabled = true);
+    const response = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            book_id: bookId,
+            feedback_type: feedbackType,
+            recommendation: lastRecommendation
+        })
+    });
     
+    const data = await response.json();
+    addMessage('bot', `🧠 ${data.result.explanation}`);
     try {
         const response = await fetch('/api/feedback', {
             method: 'POST',
@@ -392,6 +403,29 @@ async function submitFeedback(button, feedbackType) {
     } catch (error) {
         console.error('Error enviando feedback:', error);
         addMessage('bot', '❌ Error procesando tu feedback');
+    }
+}
+
+async function recommendBook(userMessage) {
+    const response = await fetch('/recomendar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userMessage })
+    });
+    const data = await response.json();
+    return data.recommendation;
+}
+
+async function addNewBook(bookData) {
+    const response = await fetch('/api/add-book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bookData)
+    });
+    
+    const data = await response.json();
+    if (data.success) {
+        addMessage('bot', `✅ Libro "${bookData.titulo}" agregado correctamente`);
     }
 }
 

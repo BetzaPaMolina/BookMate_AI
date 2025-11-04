@@ -3,222 +3,646 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BookMate AI - Con Aprendizaje Real</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>BookMate AI - Sistema de Aprendizaje</title>
     <style>
-        /* Estilos para el panel de estadísticas */
-        .learning-panel {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #E8DDD3;
+            --bg-card: #F5F0E8;
+            --purple: #9B8BC4;
+            --purple-dark: #7B6BA4;
+            --coral: #E07A7A;
+            --pink: #D4A5C4;
+            --green: #7BC4A4;
+            --blue: #6B9BC4;
+            --yellow: #E0C47A;
+            --text-dark: #4A4A4A;
+            --text-light: #7A7A7A;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-dark);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            height: 100vh;
+            gap: 0;
+        }
+
+        /* PANEL IZQUIERDO - ESTADÍSTICAS */
+        .stats-panel {
+            background: var(--bg-card);
+            padding: 25px;
+            overflow-y: auto;
+            border-right: 2px solid var(--bg-primary);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(155, 139, 196, 0.3);
+        }
+
+        .logo h1 {
+            font-size: 22px;
+            color: var(--text-dark);
+        }
+
+        .logo p {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-top: 3px;
+        }
+
+        .section {
             background: white;
-            border-radius: 20px;
+            border-radius: 15px;
             padding: 20px;
-            margin-top: 20px;
+            margin-bottom: 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.06);
         }
-        
-        .learning-panel h3 {
-            font-size: 18px;
+
+        .section h3 {
+            font-size: 16px;
             margin-bottom: 15px;
             color: var(--text-dark);
             display: flex;
             align-items: center;
             gap: 8px;
         }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
+
         .stat-card {
             background: var(--bg-card);
             padding: 15px;
             border-radius: 12px;
+            margin-bottom: 10px;
             text-align: center;
         }
-        
+
         .stat-value {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: bold;
             color: var(--purple);
             margin-bottom: 5px;
         }
-        
+
         .stat-label {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .book-item {
+            padding: 10px;
+            background: var(--bg-card);
+            border-radius: 10px;
+            margin-bottom: 8px;
+            border-left: 3px solid var(--purple);
+        }
+
+        .book-item h4 {
+            font-size: 13px;
+            margin-bottom: 3px;
+        }
+
+        .book-item p {
             font-size: 11px;
             color: var(--text-light);
         }
-        
-        .stat-section {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 2px solid var(--bg-card);
+
+        .book-score {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-top: 5px;
         }
-        
-        .stat-section h4 {
-            font-size: 14px;
-            margin-bottom: 10px;
-            color: var(--text-dark);
+
+        .score-positive {
+            background: var(--green);
+            color: white;
         }
-        
-        .emotion-bars {
+
+        .score-negative {
+            background: var(--coral);
+            color: white;
+        }
+
+        .add-book-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 10px;
+        }
+
+        .add-book-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(155, 139, 196, 0.4);
+        }
+
+        /* PANEL DERECHO - CHAT */
+        .chat-panel {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            height: 100vh;
+            background: var(--bg-card);
         }
-        
-        .emotion-bar {
+
+        .chat-header {
+            padding: 20px 25px;
+            border-bottom: 2px solid var(--bg-primary);
+            background: white;
+        }
+
+        .chat-title {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 12px;
-        }
-        
-        .emotion-bar > span:first-child {
-            min-width: 80px;
-            font-weight: 600;
-            color: var(--text-dark);
-        }
-        
-        .bar-bg {
-            flex: 1;
-            height: 8px;
-            background: var(--bg-card);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        
-        .bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--purple), var(--purple-dark));
-            transition: width 0.5s ease;
-        }
-        
-        .emotion-bar > span:last-child {
-            min-width: 30px;
-            text-align: right;
-            color: var(--text-light);
-        }
-        
-        .top-books-list {
-            list-style: none;
-            font-size: 12px;
-            color: var(--text-dark);
-        }
-        
-        .top-books-list li {
-            padding: 8px;
-            background: var(--bg-card);
-            border-radius: 8px;
-            margin-bottom: 5px;
-            display: flex;
             justify-content: space-between;
         }
-        
-        .top-books-list li span {
-            color: var(--purple);
+
+        .chat-title h2 {
+            font-size: 24px;
+            color: var(--text-dark);
+        }
+
+        .agent-badge {
+            background: var(--green);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 11px;
             font-weight: 600;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            padding: 15px 18px;
+            border-radius: 18px;
+            max-width: 85%;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.bot {
+            background: var(--purple);
+            color: white;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.user {
+            background: white;
+            color: var(--text-dark);
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .message-time {
+            font-size: 10px;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .book-recommendation {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 10px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .rec-cover {
+            width: 60px;
+            height: 85px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .rec-info {
+            flex: 1;
+        }
+
+        .rec-info h4 {
+            font-size: 13px;
+            color: var(--text-dark);
+            margin-bottom: 3px;
+        }
+
+        .rec-info p {
+            font-size: 11px;
+            color: var(--text-light);
+            line-height: 1.4;
+        }
+
+        .feedback-buttons {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .feedback-prompt {
+            font-size: 12px;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+
+        .feedback-btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .feedback-btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 12px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .feedback-btn.positive {
+            background: var(--green);
+            color: white;
+        }
+
+        .feedback-btn.neutral {
+            background: var(--yellow);
+            color: white;
+        }
+
+        .feedback-btn.negative {
+            background: var(--coral);
+            color: white;
+        }
+
+        .feedback-btn.wrong {
+            background: var(--purple);
+            color: white;
+        }
+
+        .feedback-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .feedback-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .chat-input-area {
+            padding: 20px 25px;
+            border-top: 2px solid var(--bg-primary);
+            background: white;
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--bg-primary);
+            border-radius: 12px;
+            background: var(--bg-card);
+            font-size: 13px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 80px;
+            max-height: 120px;
+        }
+
+        .input-group textarea:focus {
+            outline: none;
+            border-color: var(--purple);
+        }
+
+        .suggestions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .suggestion-chip {
+            padding: 6px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--bg-primary);
+            border-radius: 15px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .suggestion-chip:hover {
+            background: var(--purple);
+            color: white;
+            border-color: var(--purple);
+            transform: translateY(-1px);
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .send-btn {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--coral), var(--pink));
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            transform: scale(1.1);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 15px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.7;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+
+        /* Modal para agregar libros */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text-dark);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--bg-primary);
+            border-radius: 10px;
+            font-size: 13px;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-btn.primary {
+            background: var(--purple);
+            color: white;
+        }
+
+        .modal-btn.secondary {
+            background: var(--bg-card);
+            color: var(--text-dark);
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .scrollbar::-webkit-scrollbar-thumb {
+            background: var(--purple);
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
     <div class="main-container">
-        <!-- Left Panel: Book Discovery -->
-        <div class="left-panel">
-            <!-- Header -->
-            <div class="header">
-                <div class="logo">
-                    <div class="logo-icon">📚</div>
-                    <div>
-                        <h1>BookMate AI</h1>
-                        <p>🧠 Con aprendizaje real</p>
-                    </div>
-                </div>
-                <div class="header-actions">
-                    <button class="icon-btn" title="Notificaciones">🔔</button>
-                    <button class="icon-btn" title="Configuración">⚙️</button>
+        <!-- PANEL IZQUIERDO: ESTADÍSTICAS Y APRENDIZAJE -->
+        <div class="stats-panel scrollbar">
+            <div class="logo">
+                <div class="logo-icon">📚</div>
+                <div>
+                    <h1>BookMate AI</h1>
+                    <p>Sistema inteligente con feedback</p>
                 </div>
             </div>
 
-            <!-- Categories -->
-            <div class="categories">
-                <div class="category-chip active" data-category="todos">📚 Todos</div>
-                <div class="category-chip" data-category="filosofia">🧠 Filosofía</div>
-                <div class="category-chip" data-category="distopia">🌆 Distopía</div>
-                <div class="category-chip" data-category="romance">💔 Romance</div>
-                <div class="category-chip" data-category="aventura">🗺️ Aventura</div>
-                <div class="category-chip" data-category="clasica">🏛️ Clásica</div>
+            <!-- Estadísticas generales -->
+            <div class="section">
+                <h3>📊 Estadísticas de Aprendizaje</h3>
+                <div class="stat-card">
+                    <div class="stat-value" id="total-feedback">0</div>
+                    <div class="stat-label">Feedback recibido</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="total-books">12</div>
+                    <div class="stat-label">Libros en biblioteca</div>
+                </div>
             </div>
 
-            <!-- Mi Biblioteca Section -->
-            <div class="section-header">
-                <h2>Mi Biblioteca</h2>
-                <span class="view-all" onclick="showAllBooks()">Ver todo →</span>
-            </div>
-
-            <div class="books-grid" id="library-books">
-                <div class="loading-spinner">Cargando biblioteca...</div>
-            </div>
-
-            <!-- Learning Stats Panel -->
-            <div class="learning-panel">
-                <h3>🧠 Panel de Aprendizaje</h3>
-                <p style="font-size: 12px; color: var(--text-light); margin-bottom: 15px;">
-                    El sistema aprende de tus preferencias en tiempo real
-                </p>
-                <div id="learning-stats">
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-value">0</div>
-                            <div class="stat-label">📚 Interacciones totales</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value">0</div>
-                            <div class="stat-label">💬 En esta sesión</div>
-                        </div>
-                    </div>
-                    <p style="font-size: 11px; color: var(--text-light); text-align: center;">
-                        Empieza a chatear para ver estadísticas
+            <!-- Libros mejor calificados -->
+            <div class="section">
+                <h3>⭐ Libros que te gustan</h3>
+                <div id="top-books">
+                    <p style="text-align: center; color: var(--text-light); font-size: 12px; padding: 10px;">
+                        Empieza a dar feedback para ver resultados
                     </p>
                 </div>
             </div>
 
-            <!-- Featured Section - Recent Books -->
-            <div class="featured-section">
-                <div class="featured-content">
-                    <h3>📚 Libros con Buenas Reseñas Recientes</h3>
-                    <p>Descubre los libros mejor valorados y más comentados recientemente en el mundo literario.</p>
-                    <div class="recent-books-list" id="recent-books-list">
-                        <div class="loading-spinner">Cargando reseñas...</div>
-                    </div>
+            <!-- Libros que no te gustaron -->
+            <div class="section">
+                <h3>👎 Libros a evitar</h3>
+                <div id="worst-books">
+                    <p style="text-align: center; color: var(--text-light); font-size: 12px; padding: 10px;">
+                        Empieza a dar feedback para ver resultados
+                    </p>
                 </div>
+            </div>
+
+            <!-- Agregar libro -->
+            <div class="section">
+                <h3>➕ Expandir Biblioteca</h3>
+                <p style="font-size: 12px; color: var(--text-light); margin-bottom: 10px;">
+                    Agrega nuevos libros para que el sistema aprenda más
+                </p>
+                <button class="add-book-btn" onclick="showAddBookModal()">
+                    📖 Agregar Nuevo Libro
+                </button>
             </div>
         </div>
 
-        <!-- Right Panel: AI Chat -->
-        <div class="right-panel">
+        <!-- PANEL DERECHO: CHAT -->
+        <div class="chat-panel">
             <div class="chat-header">
                 <div class="chat-title">
-                    <div>
-                        <h3>Chat con IA</h3>
-                        <p class="chat-subtitle">Sistema de aprendizaje activo</p>
-                    </div>
+                    <h2>💬 Chat con IA</h2>
+                    <span class="agent-badge">🧠 Aprendiendo</span>
                 </div>
-                <span class="agent-badge">🧠 Aprendiendo</span>
             </div>
 
-            <div class="chat-messages" id="chat-messages">
+            <div class="chat-messages scrollbar" id="chat-messages">
                 <div class="message bot">
-                    <div>¡Hola! 👋 Soy BookMate AI con <strong>aprendizaje real</strong>.</div>
-                    <div style="margin-top: 8px;">
-                        🧠 Aprendo de cada conversación<br>
-                        🎯 Evito repetir recomendaciones<br>
-                        📊 Analizo tus emociones en contexto<br>
-                        💾 Recuerdo tus preferencias entre sesiones
+                    <div>¡Hola! 👋 Soy BookMate AI con <strong>aprendizaje real por feedback</strong>.</div>
+                    <div style="margin-top: 10px;">
+                        ✅ Dime qué buscas<br>
+                        ✅ Te recomendaré un libro<br>
+                        ✅ Califica si fue útil<br>
+                        ✅ Aprenderé de tu respuesta
                     </div>
-                    <div style="margin-top: 8px;">
-                        Cuéntame cómo te sientes y qué buscas. ¡Veamos cómo mejoro con el tiempo!
+                    <div style="margin-top: 10px; font-size: 12px; opacity: 0.9;">
+                        💡 Entre más feedback des, más preciso seré
                     </div>
                     <div class="message-time">Ahora</div>
                 </div>
@@ -227,20 +651,16 @@
             <div class="chat-input-area">
                 <form id="recommendation-form">
                     <div class="input-group">
-                        <label>💬 Cuéntame qué buscas</label>
                         <textarea 
                             id="user-message" 
-                            name="message" 
-                            placeholder="Ejemplo: 'Me siento nostálgico y quiero algo que me haga reflexionar sobre la vida' o 'Dame algo más triste que lo anterior'"
-                            rows="3"
+                            placeholder="Ejemplo: 'Me siento nostálgico y quiero algo profundo' o 'Dame algo más triste'"
                             required
                         ></textarea>
                         <div class="suggestions">
-                            <span class="suggestion-chip" data-text="Me siento melancólico, necesito algo profundo">😔 Melancólico</span>
-                            <span class="suggestion-chip" data-text="Quiero aventura y emoción">🗺️ Aventura</span>
-                            <span class="suggestion-chip" data-text="Busco algo filosófico que me haga pensar">💭 Filosófico</span>
-                            <span class="suggestion-chip" data-text="Algo más triste que acompañe mi estado">😢 Más triste</span>
-                            <span class="suggestion-chip" data-text="Sorpréndeme con algo diferente">🎲 Sorpresa</span>
+                            <span class="suggestion-chip" onclick="fillSuggestion('Me siento melancólico y necesito algo profundo')">😔 Melancólico</span>
+                            <span class="suggestion-chip" onclick="fillSuggestion('Quiero algo que me haga reflexionar')">💭 Reflexivo</span>
+                            <span class="suggestion-chip" onclick="fillSuggestion('Algo más triste que lo anterior')">😢 Más triste</span>
+                            <span class="suggestion-chip" onclick="fillSuggestion('Sorpréndeme')">🎲 Sorpresa</span>
                         </div>
                     </div>
 
@@ -252,6 +672,445 @@
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <!-- Modal para agregar libros -->
+    <div class="modal" id="add-book-modal">
+        <div class="modal-content">
+            <h3>📖 Agregar Nuevo Libro</h3>
+            <form id="add-book-form">
+                <div class="form-group">
+                    <label>Título *</label>
+                    <input type="text" id="book-title" required>
+                </div>
+                <div class="form-group">
+                    <label>Autor *</label>
+                    <input type="text" id="book-author" required>
+                </div>
+                <div class="form-group">
+                    <label>Descripción *</label>
+                    <textarea id="book-desc" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Categoría *</label>
+                    <select id="book-category" required>
+                        <option value="filosofia">🧠 Filosofía</option>
+                        <option value="romance">💔 Romance</option>
+                        <option value="distopia">🌆 Distopía</option>
+                        <option value="aventura">🗺️ Aventura</option>
+                        <option value="clasica">🏛️ Clásica</option>
+                        <option value="humor">😄 Humor</option>
+                        <option value="terror">👻 Terror</option>
+                        <option value="ciencia_ficcion">🚀 Ciencia Ficción</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Emociones (separadas por coma)</label>
+                    <input type="text" id="book-emotions" placeholder="Ej: triste, pensativo, reflexivo">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="modal-btn secondary" onclick="closeAddBookModal()">Cancelar</button>
+                    <button type="submit" class="modal-btn primary">Agregar Libro</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Simular datos persistentes (en producción usarías localStorage)
+        let feedbackData = {
+            totalFeedback: 0,
+            bookRatings: {},
+            customBooks: []
+        };
+
+        let lastRecommendation = null;
+
+        // Biblioteca base
+        const biblioteca = {
+            "filosofia": [
+                {
+                    "titulo": "Memorias del subsuelo",
+                    "autor": "Fiódor Dostoievski",
+                    "descripcion": "Existencialismo, alienación e introspección profunda",
+                    "color": "#6B9BC4",
+                    "emoji": "🧠",
+                    "emociones": ["pensativo", "triste", "confundido"]
+                },
+                {
+                    "titulo": "Siddharta",
+                    "autor": "Hermann Hesse",
+                    "descripcion": "Búsqueda espiritual y sabiduría oriental",
+                    "color": "#E0C47A",
+                    "emoji": "🕉️",
+                    "emociones": ["pensativo", "curioso", "confundido"]
+                }
+            ],
+            "romance": [
+                {
+                    "titulo": "María",
+                    "autor": "Jorge Isaacs",
+                    "descripcion": "Amor imposible y romanticismo clásico latinoamericano",
+                    "color": "#E07A7A",
+                    "emoji": "💔",
+                    "emociones": ["triste", "romántico", "nostálgico"]
+                },
+                {
+                    "titulo": "Jane Eyre",
+                    "autor": "Charlotte Brontë",
+                    "descripcion": "Amor, independencia y fortaleza moral",
+                    "color": "#D4A5C4",
+                    "emoji": "💝",
+                    "emociones": ["romántico", "motivado"]
+                }
+            ],
+            "distopia": [
+                {
+                    "titulo": "1984",
+                    "autor": "George Orwell",
+                    "descripcion": "Totalitarismo, vigilancia masiva y control del pensamiento",
+                    "color": "#6B7BC4",
+                    "emoji": "👁️",
+                    "emociones": ["pensativo", "ansioso"]
+                },
+                {
+                    "titulo": "Fahrenheit 451",
+                    "autor": "Ray Bradbury",
+                    "descripcion": "Censura, quema de libros y libertad de pensamiento",
+                    "color": "#E0C47A",
+                    "emoji": "🔥",
+                    "emociones": ["pensativo", "motivado"]
+                }
+            ],
+            "aventura": [
+                {
+                    "titulo": "La Odisea",
+                    "autor": "Homero",
+                    "descripcion": "Épica aventura de Odiseo regresando a casa",
+                    "color": "#6B9BC4",
+                    "emoji": "⛵",
+                    "emociones": ["feliz", "curioso", "motivado"]
+                }
+            ],
+            "clasica": [
+                {
+                    "titulo": "Los miserables",
+                    "autor": "Victor Hugo",
+                    "descripcion": "Justicia, redención y amor en la Francia revolucionaria",
+                    "color": "#9B8BC4",
+                    "emoji": "⚜️",
+                    "emociones": ["triste", "motivado", "pensativo"]
+                }
+            ]
+        };
+
+        // Función para obtener todos los libros
+        function getAllBooks() {
+            let allBooks = [];
+            for (let category in biblioteca) {
+                allBooks = allBooks.concat(biblioteca[category]);
+            }
+            return allBooks.concat(feedbackData.customBooks || []);
+        }
+
+        // Detectar emoción simple
+        function detectEmotion(text) {
+            text = text.toLowerCase();
+            const emotions = {
+                'triste': ['triste', 'melancólico', 'deprimido', 'solo', 'vacío', 'vacía'],
+                'feliz': ['feliz', 'alegre', 'contento', 'bien'],
+                'pensativo': ['pensativo', 'reflexivo', 'profundo', 'filosofía'],
+                'motivado': ['motivado', 'inspirado', 'energía'],
+                'ansioso': ['ansioso', 'nervioso', 'molesto', 'enojado'],
+                'curioso': ['curioso', 'sorpresa', 'explorar']
+            };
+
+            for (let emotion in emotions) {
+                if (emotions[emotion].some(word => text.includes(word))) {
+                    return emotion;
+                }
+            }
+            return 'neutral';
+        }
+
+        // Recomendar libro
+        function recommendBook(userMessage) {
+            const emotion = detectEmotion(userMessage);
+            const allBooks = getAllBooks();
+            
+            // Filtrar libros que coincidan con la emoción
+            let matches = allBooks.filter(book => 
+                book.emociones && book.emociones.includes(emotion)
+            );
+
+            // Si no hay matches, usar todos
+            if (matches.length === 0) {
+                matches = allBooks;
+            }
+
+            // Aplicar feedback: evitar libros con feedback negativo
+            matches = matches.map(book => {
+                const bookId = `${book.titulo}_${book.autor}`;
+                const rating = feedbackData.bookRatings[bookId] || { positive: 0, negative: 0 };
+                const score = rating.positive - rating.negative;
+                return { ...book, feedbackScore: score };
+            });
+
+            // Ordenar por score de feedback
+            matches.sort((a, b) => b.feedbackScore - a.feedbackScore);
+
+            return {
+                libro: matches[0],
+                emotion: emotion,
+                allBooks: allBooks.length
+            };
+        }
+
+        // Chat: Enviar mensaje
+        document.getElementById('recommendation-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const userMessage = document.getElementById('user-message').value.trim();
+            if (!userMessage) return;
+
+            addMessage('user', userMessage);
+            document.getElementById('user-message').value = '';
+
+            // Typing indicator
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot typing-indicator';
+            typingDiv.id = 'typing';
+            typingDiv.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+            document.getElementById('chat-messages').appendChild(typingDiv);
+            scrollToBottom();
+
+            // Simular delay
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            document.getElementById('typing')?.remove();
+
+            // Obtener recomendación
+            const recommendation = recommendBook(userMessage);
+            lastRecommendation = recommendation;
+
+            displayRecommendation(recommendation);
+            scrollToBottom();
+        });
+
+        function addMessage(type, text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.innerHTML = `
+                <div>${text}</div>
+                <div class="message-time">${new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</div>
+            `;
+            document.getElementById('chat-messages').appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        function displayRecommendation(data) {
+            const libro = data.libro;
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot';
+            
+            messageDiv.innerHTML = `
+                <div>🎯 Basado en tu estado "${data.emotion}", te recomiendo:</div>
+                <div class="book-recommendation">
+                    <div class="rec-cover" style="background: linear-gradient(135deg, ${libro.color}, ${libro.color}dd);">
+                        ${libro.emoji}
+                    </div>
+                    <div class="rec-info">
+                        <h4>${libro.titulo}</h4>
+                        <p style="color: var(--purple); margin-bottom: 5px;">${libro.autor}</p>
+                        <p>${libro.descripcion}</p>
+                    </div>
+                </div>
+                <div class="feedback-buttons" data-book-id="${libro.titulo}_${libro.autor}">
+                    <p class="feedback-prompt">¿Fue útil esta recomendación?</p>
+                    <div class="feedback-btn-group">
+                        <button class="feedback-btn positive" onclick="submitFeedback('positive', this)">
+                            👍 Perfecta
+                        </button>
+                        <button class="feedback-btn neutral" onclick="submitFeedback('neutral', this)">
+                            😐 Regular
+                        </button>
+                        <button class="feedback-btn negative" onclick="submitFeedback('negative', this)">
+                            👎 No era esto
+                        </button>
+                        <button class="feedback-btn wrong" onclick="submitFeedback('wrong_emotion', this)">
+                            🎭 Emoción incorrecta
+                        </button>
+                    </div>
+                </div>
+                <div class="message-time">${new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</div>
+            `;
+            
+            document.getElementById('chat-messages').appendChild(messageDiv);
+        }
+
+        // Enviar feedback
+        function submitFeedback(feedbackType, button) {
+            const container = button.closest('.feedback-buttons');
+            const bookId = container.dataset.bookId;
+            
+            // Deshabilitar todos los botones
+            container.querySelectorAll('.feedback-btn').forEach(btn => btn.disabled = true);
+            
+            // Actualizar ratings
+            if (!feedbackData.bookRatings[bookId]) {
+                feedbackData.bookRatings[bookId] = { positive: 0, negative: 0, neutral: 0 };
+            }
+            
+            if (feedbackType === 'positive') {
+                feedbackData.bookRatings[bookId].positive += 1;
+            } else if (feedbackType === 'negative') {
+                feedbackData.bookRatings[bookId].negative += 1;
+            } else {
+                feedbackData.bookRatings[bookId].neutral += 1;
+            }
+            
+            feedbackData.totalFeedback += 1;
+            
+            // Guardar en localStorage
+            localStorage.setItem('bookmateFeedback', JSON.stringify(feedbackData));
+            
+            // Mostrar mensaje de aprendizaje
+            let message = '';
+            if (feedbackType === 'positive') {
+                message = '✅ ¡Genial! He aprendido que este libro funciona bien para este tipo de situaciones. Lo priorizaré en el futuro.';
+            } else if (feedbackType === 'negative') {
+                message = '📝 Entendido. Reduciré la probabilidad de recomendar este libro en situaciones similares.';
+            } else if (feedbackType === 'wrong_emotion') {
+                message = '🔍 Tomaré nota. Necesito mejorar mi detección emocional para este tipo de mensajes.';
+            } else {
+                message = '📊 Feedback registrado. Esto me ayuda a calibrar mejor.';
+            }
+            
+            setTimeout(() => {
+                addMessage('bot', `🧠 ${message}`);
+                updateStats();
+            }, 300);
+        }
+
+        // Actualizar estadísticas
+        function updateStats() {
+            document.getElementById('total-feedback').textContent = feedbackData.totalFeedback;
+            document.getElementById('total-books').textContent = getAllBooks().length;
+            
+            // Top books (positivos)
+            const topBooksContainer = document.getElementById('top-books');
+            const bookRatings = Object.entries(feedbackData.bookRatings)
+                .map(([id, ratings]) => ({
+                    id,
+                    score: ratings.positive - ratings.negative,
+                    positive: ratings.positive,
+                    negative: ratings.negative
+                }))
+                .filter(b => b.score > 0)
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 3);
+            
+            if (bookRatings.length === 0) {
+                topBooksContainer.innerHTML = '<p style="text-align: center; color: var(--text-light); font-size: 12px; padding: 10px;">Aún no hay libros calificados positivamente</p>';
+            } else {
+                topBooksContainer.innerHTML = bookRatings.map(book => {
+                    const title = book.id.split('_')[0];
+                    return `
+                        <div class="book-item">
+                            <h4>${title}</h4>
+                            <p>👍 ${book.positive} feedback positivos</p>
+                            <span class="book-score score-positive">Score: +${book.score}</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            // Worst books (negativos)
+            const worstBooksContainer = document.getElementById('worst-books');
+            const worstBooks = Object.entries(feedbackData.bookRatings)
+                .map(([id, ratings]) => ({
+                    id,
+                    score: ratings.positive - ratings.negative,
+                    negative: ratings.negative
+                }))
+                .filter(b => b.score < 0)
+                .sort((a, b) => a.score - b.score)
+                .slice(0, 3);
+            
+            if (worstBooks.length === 0) {
+                worstBooksContainer.innerHTML = '<p style="text-align: center; color: var(--text-light); font-size: 12px; padding: 10px;">Aún no hay libros con feedback negativo</p>';
+            } else {
+                worstBooksContainer.innerHTML = worstBooks.map(book => {
+                    const title = book.id.split('_')[0];
+                    return `
+                        <div class="book-item">
+                            <h4>${title}</h4>
+                            <p>👎 ${book.negative} feedback negativos</p>
+                            <span class="book-score score-negative">Score: ${book.score}</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        // Modal de agregar libro
+        function showAddBookModal() {
+            document.getElementById('add-book-modal').classList.add('show');
+        }
+
+        function closeAddBookModal() {
+            document.getElementById('add-book-modal').classList.remove('show');
+            document.getElementById('add-book-form').reset();
+        }
+
+        document.getElementById('add-book-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const newBook = {
+                titulo: document.getElementById('book-title').value,
+                autor: document.getElementById('book-author').value,
+                descripcion: document.getElementById('book-desc').value,
+                categoria: document.getElementById('book-category').value,
+                emociones: document.getElementById('book-emotions').value.split(',').map(e => e.trim()),
+                color: '#9B8BC4',
+                emoji: '📖'
+            };
+            
+            // Agregar a biblioteca custom
+            if (!feedbackData.customBooks) {
+                feedbackData.customBooks = [];
+            }
+            feedbackData.customBooks.push(newBook);
+            
+            // Guardar
+            localStorage.setItem('bookmateFeedback', JSON.stringify(feedbackData));
+            
+            // Mensaje de éxito
+            addMessage('bot', `✅ ¡Libro agregado! "${newBook.titulo}" de ${newBook.autor} ahora está en mi biblioteca. Puedo recomendarlo cuando sea apropiado.`);
+            
+            updateStats();
+            closeAddBookModal();
+        });
+
+        // Sugerencias rápidas
+        function fillSuggestion(text) {
+            document.getElementById('user-message').value = text;
+            document.getElementById('user-message').focus();
+        }
+
+        // Scroll al final del chat
+        function scrollToBottom() {
+            const chatMessages = document.getElementById('chat-messages');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Cargar datos al iniciar
+        window.addEventListener('DOMContentLoaded', function() {
+            // Cargar feedback guardado
+            const saved = localStorage.getItem('bookmateFeedback');
+            if (saved) {
+                feedbackData = JSON.parse(saved);
+            }
+            updateStats();
+        });
+    </script>
 </body>
 </html>
