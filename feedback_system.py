@@ -35,9 +35,9 @@ class FeedbackSystem:
     def init_feedback_data(self):
         """Inicializa estructura de feedback"""
         return {
-            'book_ratings': defaultdict(lambda: {'positive': 0, 'negative': 0, 'neutral': 0}),
-            'emotion_accuracy': defaultdict(lambda: {'correct': 0, 'incorrect': 0}),
-            'context_effectiveness': defaultdict(lambda: {'helpful': 0, 'not_helpful': 0}),
+            'book_ratings': {},  # ❌ CAMBIAR de defaultdict a dict normal
+            'emotion_accuracy': {},
+            'context_effectiveness': {},
             'total_feedback_count': 0,
             'learning_adjustments': []
         }
@@ -86,6 +86,8 @@ class FeedbackSystem:
         # 1. AJUSTAR SCORE DEL LIBRO
         if feedback_type == 'positive':
             adjustment = +0.5
+            if book_id not in self.feedback_data['book_ratings']:
+                self.feedback_data['book_ratings'][book_id] = {'positive': 0, 'negative': 0, 'neutral': 0}
             self.feedback_data['book_ratings'][book_id]['positive'] += 1
             adjustments['adjustments_made'].append(
                 f"📈 Score de '{libro['titulo']}' aumentado +{adjustment}"
@@ -111,6 +113,8 @@ class FeedbackSystem:
             adjustments['adjustments_made'].append(
                 f"✅ Emoción '{emotion}' correctamente identificada"
             )
+
+
         
         # 3. AJUSTAR EFECTIVIDAD DE CONTEXTOS
         for context in special_contexts:
