@@ -316,29 +316,61 @@
       "special_contexts": [
         "intenso"
       ]
+    },
+    {
+      "timestamp": "2025-11-03T19:38:49.693525",
+      "user_message": "Me siento melancólico, necesito algo profundo",
+      "emotion": "triste",
+      "confidence": 0.5,
+      "recommended": "Pedro Páramo",
+      "categoria": "realismo_magico",
+      "score": 10.09,
+      "special_contexts": [
+        "intenso"
+      ]
+    },
+    {
+      "timestamp": "2025-11-03T19:39:31.684857",
+      "user_message": "Ya leí Pedro Páramo, dame otra opción igual de triste.",
+      "emotion": "triste",
+      "confidence": 1.0,
+      "recommended": "Anna Karenina",
+      "categoria": "romance",
+      "score": 8.06,
+      "special_contexts": []
+    },
+    {
+      "timestamp": "2025-11-03T19:39:58.194672",
+      "user_message": "Quiero algo con una mujer protagonista y duelo.",
+      "emotion": "triste",
+      "confidence": 1.0,
+      "recommended": "María",
+      "categoria": "romance",
+      "score": 8.61,
+      "special_contexts": []
     }
   ],
   "preferences": {
-    "triste": 4.500000000000001,
-    "pensativo": 2.600000000000001,
+    "triste": 5.4,
+    "pensativo": 2.800000000000001,
     "neutral": 1.4,
-    "romántico": 0.5,
+    "romántico": 0.7,
     "feliz": 0.6,
     "curioso": 0.8,
     "motivado": 1.4000000000000001,
-    "confundido": 0.8999999999999999,
-    "nostálgico": 0.4,
+    "confundido": 0.9999999999999999,
+    "nostálgico": 0.5,
     "ansioso": 1.1,
     "aburrido": 0.1
   },
   "book_scores": {
     "Memorias del subsuelo_Fiódor Dostoievski": 0.30000000000000004,
-    "Pedro Páramo_Juan Rulfo": 0.30000000000000004,
-    "Anna Karenina_León Tolstói": 0.2,
+    "Pedro Páramo_Juan Rulfo": 0.4,
+    "Anna Karenina_León Tolstói": 0.30000000000000004,
     "Los hermanos Karamázov_Fiódor Dostoievski": 0.30000000000000004,
     "La Odisea_Homero": 0.2,
     "El líder mentor_Tony Dungy": 0.2,
-    "María_Jorge Isaacs": 0.2,
+    "María_Jorge Isaacs": 0.30000000000000004,
     "Los miserables_Victor Hugo": 0.4,
     "Fahrenheit 451_Ray Bradbury": 0.1,
     "Siddharta_Hermann Hesse": 0.1,

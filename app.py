@@ -1,11 +1,43 @@
 from flask import Flask, render_template, request, jsonify
 from smart_recommender import SmartRecommender
+from feedback_system import FeedbackSystem
 
+feedback_sys = FeedbackSystem()
 app = Flask(__name__)
 
 # Instanciar el recomendador inteligente
 recommender = SmartRecommender()
 
+@app.route('/api/feedback', methods=['POST'])
+def submit_feedback():
+    """Usuario califica la última recomendación"""
+    try:
+        data = request.get_json()
+        recommendation = data.get('recommendation')
+        feedback_type = data.get('feedback_type')  # 'positive', 'negative', 'neutral', 'wrong_emotion'
+        comment = data.get('comment', None)
+        
+        result = feedback_sys.process_feedback(recommendation, feedback_type, comment)
+        
+        return jsonify({
+            'success': True,
+            'result': result
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/feedback-stats')
+def get_feedback_stats():
+    """Retorna estadísticas de aprendizaje"""
+    try:
+        stats = feedback_sys.get_feedback_stats()
+        return jsonify({
+            'success': True,
+            'stats': stats
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -192,6 +224,8 @@ def health():
         'total_books': len(recommender.get_all_books_flat()),
         'total_interactions': len(recommender.history.get('interactions', []))
     })
+
+
 
 if __name__ == '__main__':
     print("🚀 Iniciando BookMate AI (Smart Learning)...")

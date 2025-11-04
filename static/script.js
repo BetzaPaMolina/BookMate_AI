@@ -340,6 +340,59 @@ function displayRecommendation(data) {
             `);
         }, 500);
     }
+
+    // AGREGAR BOTONES DE FEEDBACK
+    messageDiv.innerHTML += `
+        <div class="feedback-buttons" data-recommendation='${JSON.stringify(data)}'>
+            <p style="font-size: 12px; margin: 10px 0 8px 0; opacity: 0.9;">¿Fue útil esta recomendación?</p>
+            <div style="display: flex; gap: 8px;">
+                <button class="feedback-btn positive" onclick="submitFeedback(this, 'positive')">
+                    👍 Perfecta
+                </button>
+                <button class="feedback-btn neutral" onclick="submitFeedback(this, 'neutral')">
+                    😐 Regular
+                </button>
+                <button class="feedback-btn negative" onclick="submitFeedback(this, 'negative')">
+                    👎 No era esto
+                </button>
+                <button class="feedback-btn wrong" onclick="submitFeedback(this, 'wrong_emotion')">
+                    🎭 Emoción incorrecta
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+async function submitFeedback(button, feedbackType) {
+    const container = button.closest('.feedback-buttons');
+    const recommendation = JSON.parse(container.dataset.recommendation);
+    
+    // Deshabilitar botones
+    container.querySelectorAll('.feedback-btn').forEach(btn => btn.disabled = true);
+    
+    try {
+        const response = await fetch('/api/feedback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                recommendation: recommendation,
+                feedback_type: feedbackType
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // Mostrar explicación del aprendizaje
+            addMessage('bot', `🧠 ${data.result.explanation}`);
+            
+            // Actualizar stats
+            loadLearningStats();
+        }
+    } catch (error) {
+        console.error('Error enviando feedback:', error);
+        addMessage('bot', '❌ Error procesando tu feedback');
+    }
 }
 
 function scrollToBottom() {

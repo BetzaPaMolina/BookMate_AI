@@ -655,3 +655,50 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+.feedback-buttons {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255,255,255,0.3);
+}
+
+.feedback-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 12px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 600;
+}
+
+.feedback-btn.positive {
+    background: var(--green);
+    color: white;
+}
+
+.feedback-btn.neutral {
+    background: var(--yellow);
+    color: white;
+}
+
+.feedback-btn.negative {
+    background: var(--coral);
+    color: white;
+}
+
+.feedback-btn.wrong {
+    background: var(--purple);
+    color: white;
+}
+
+.feedback-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.feedback-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
